@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+body {
+  font-family: "Share Tech Mono", monospace;
+  background: radial-gradient(circle at center, #001100 0%, #000000 80%);
+  color: #00ff66;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #00ff66;
+  text-shadow: 0 0 20px #00ff66, 0 0 40px #00aa33;
+  letter-spacing: 2px;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.section {
+  background: rgba(0, 20, 0, 0.8);
+  border: 1px solid #00ff66;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1 1 400px;
+  box-shadow: 0 0 20px #003300 inset, 0 0 15px #00ff66;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.section:hover {
+  box-shadow: 0 0 25px #00ff66, 0 0 35px #009944;
+  transform: translateY(-5px);
+}
+
+.section h2 {
+  color: #00ff66;
+  border-bottom: 1px dashed #00ff66;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px #00ff66;
+}
+
+input[type=file] {
+  display: none;
+}
+
+label,
+.btn {
+  display: inline-block;
+  background: transparent;
+  color: #00ff66;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #00ff66;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+label:hover,
+.btn:hover {
+  background: #00ff66;
+  color: #001100;
+  box-shadow: 0 0 20px #00ff66;
+}
+
+.btn.secondary {
+  background: transparent;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+}
+
+p {
+  margin-top: 15px;
+  font-size: 0.95em;
+  color: #00ff99;
+  white-space: pre-line;
+}
+
+.highlight {
+  color: #00ffcc;
+  font-weight: bold;
+}
+
+.controls {
+  margin-top: 15px;
+}
+
+footer {
+  margin-top: auto;
+  padding: 15px;
+  color: #009944;
+  font-size: 0.9em;
+  text-shadow: 0 0 5px #00ff66;
+}
