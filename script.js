@@ -1,27 +1,12 @@
-/* =========================================================
-   CRAFTLAND UID EDITOR
-   PREMIUM EDITION
-
-   CORE UID LOGIC PRESERVED
-   - ULEB128 Decode
-   - ULEB128 Encode
-   - BYTES 38...42 Pattern
-   - META 03...A2 03 Pattern
-   - Edit UID
-   - Remove UID
-   - Download
-   ========================================================= */
+// ============================================================
+// CRAFTER MARUF — CRAFTLAND UID EDITOR
+// ============================================================
 
 
-/* =========================================================
-   ULEB128 UTILS
-   ========================================================= */
+// ============================================================
+// ULEB128
+// ============================================================
 
-
-/**
- * ULEB128 Decode
- * Bytes -> BigInt
- */
 function decode_leb128(bytes) {
 
     let result = 0n;
@@ -45,14 +30,10 @@ function decode_leb128(bytes) {
 }
 
 
-/**
- * ULEB128 Encode
- * BigInt -> Bytes Array
- */
 function encode_uleb128(value) {
 
     let val =
-        (typeof value === "bigint")
+        typeof value === "bigint"
             ? value
             : BigInt(value);
 
@@ -80,9 +61,6 @@ function encode_uleb128(value) {
 }
 
 
-/**
- * Check valid ULEB128
- */
 function isValidUleb128(bytes) {
 
     if (!bytes || bytes.length === 0) {
@@ -110,20 +88,10 @@ function isValidUleb128(bytes) {
 }
 
 
-/* =========================================================
-   PATTERN FINDERS
-   ========================================================= */
+// ============================================================
+// BYTES PATTERN
+// ============================================================
 
-
-/**
- * BYTES:
- *
- * Find closest:
- *
- * 38 ... 42
- *
- * from END
- */
 function findBytesPattern(data) {
 
     for (
@@ -153,10 +121,10 @@ function findBytesPattern(data) {
 
                             start: j,
 
-                            middleStart:
-                                j + 1,
+                            middleStart: j + 1,
 
                             end: i
+
                         };
                     }
 
@@ -170,15 +138,10 @@ function findBytesPattern(data) {
 }
 
 
-/**
- * META:
- *
- * Find closest:
- *
- * 03 ... A2 03
- *
- * from END
- */
+// ============================================================
+// META PATTERN
+// ============================================================
+
 function findMetaPattern(data) {
 
     for (
@@ -201,7 +164,10 @@ function findMetaPattern(data) {
                 if (data[j] === 0x03) {
 
                     const candidate =
-                        data.slice(j + 1, i - 1);
+                        data.slice(
+                            j + 1,
+                            i - 1
+                        );
 
                     if (
                         isValidUleb128(candidate)
@@ -211,10 +177,10 @@ function findMetaPattern(data) {
 
                             start: j,
 
-                            middleStart:
-                                j + 1,
+                            middleStart: j + 1,
 
                             end: i - 1
+
                         };
                     }
 
@@ -228,9 +194,9 @@ function findMetaPattern(data) {
 }
 
 
-/* =========================================================
-   GLOBAL DATA
-   ========================================================= */
+// ============================================================
+// DATA
+// ============================================================
 
 let bytesData = {
 
@@ -252,9 +218,9 @@ let metaData = {
 };
 
 
-/* =========================================================
-   DOM
-   ========================================================= */
+// ============================================================
+// DOM
+// ============================================================
 
 const bytesFile =
     document.getElementById("bytesFile");
@@ -274,7 +240,6 @@ const bytesControls =
 const metaControls =
     document.getElementById("metaControls");
 
-
 const bytesDropZone =
     document.getElementById("bytesDropZone");
 
@@ -282,50 +247,10 @@ const metaDropZone =
     document.getElementById("metaDropZone");
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+// ============================================================
+// TOAST
+// ============================================================
 
-
-/**
- * Format file size
- */
-function formatFileSize(bytes) {
-
-    if (bytes < 1024) {
-        return `${bytes} B`;
-    }
-
-    if (bytes < 1024 * 1024) {
-
-        return (
-            `${(bytes / 1024).toFixed(2)} KB`
-        );
-    }
-
-    return (
-        `${(bytes / (1024 * 1024)).toFixed(2)} MB`
-    );
-}
-
-
-/**
- * Escape HTML
- */
-function escapeHTML(value) {
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-/**
- * Toast
- */
 function showToast(
     message,
     type = "success"
@@ -340,24 +265,20 @@ function showToast(
         document.createElement("div");
 
     toast.className =
-        `toast ${type === "error" ? "error" : ""}`;
+        `toast ${type}`;
 
-    toast.innerHTML = `
-
-        <div class="toast-icon">
-            ${type === "error" ? "!" : "✓"}
-        </div>
-
-        <div class="toast-text">
-            ${escapeHTML(message)}
-        </div>
-    `;
+    toast.textContent =
+        message;
 
     container.appendChild(toast);
 
+
     setTimeout(() => {
 
-        toast.classList.add("out");
+        toast.style.opacity = "0";
+
+        toast.style.transform =
+            "translateX(20px)";
 
         setTimeout(() => {
 
@@ -365,182 +286,85 @@ function showToast(
 
         }, 300);
 
-    }, 2800);
+    }, 2500);
 }
 
 
-/**
- * Set result state
- */
-function setResult(
-    output,
-    type,
-    title,
-    message
-) {
+// ============================================================
+// FILE SIZE
+// ============================================================
 
-    output.className =
-        `result-box ${type || ""}`;
+function formatFileSize(bytes) {
 
-    let icon = "◌";
-
-    if (type === "success") {
-        icon = "✓";
+    if (bytes === 0) {
+        return "0 Bytes";
     }
 
-    if (type === "error") {
-        icon = "!";
-    }
+    const sizes = [
+        "Bytes",
+        "KB",
+        "MB",
+        "GB"
+    ];
 
-    if (type === "processing") {
-        icon = "◌";
-    }
+    const i =
+        Math.floor(
+            Math.log(bytes) /
+            Math.log(1024)
+        );
 
-    output.innerHTML = `
-
-        <div class="result-icon">
-            ${icon}
-        </div>
-
-        <div>
-
-            <span class="result-label">
-                ${escapeHTML(title)}
-            </span>
-
-            <strong>
-                ${message}
-            </strong>
-
-        </div>
-    `;
+    return (
+        parseFloat(
+            (
+                bytes /
+                Math.pow(1024, i)
+            ).toFixed(2)
+        )
+        +
+        " " +
+        sizes[i]
+    );
 }
 
 
-/**
- * Show processing state
- */
-function showProcessing(
-    output,
-    message
-) {
+// ============================================================
+// ESCAPE HTML
+// ============================================================
 
-    output.className =
-        "result-box processing";
+function escapeHTML(value) {
 
-    output.innerHTML = `
+    return String(value)
 
-        <div class="result-icon">
-            ◌
-        </div>
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        <div>
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-            <span class="result-label">
-                PROCESSING
-            </span>
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-            <strong>
-                ${escapeHTML(message)}
-            </strong>
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        </div>
-    `;
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
-/**
- * File info update
- */
-function updateFileInfo(
-    type,
-    file
-) {
-
-    const prefix =
-        type === "bytes"
-            ? "bytes"
-            : "meta";
-
-    const info =
-        document.getElementById(
-            `${prefix}FileInfo`
-        );
-
-    const name =
-        document.getElementById(
-            `${prefix}FileName`
-        );
-
-    const size =
-        document.getElementById(
-            `${prefix}FileSize`
-        );
-
-    if (!file) {
-
-        info.classList.remove("active");
-
-        name.textContent =
-            "No file selected";
-
-        size.textContent =
-            "Waiting for file...";
-
-        return;
-    }
-
-    info.classList.add("active");
-
-    name.textContent =
-        file.name;
-
-    size.textContent =
-        `${formatFileSize(file.size)} • ${type.toUpperCase()} FILE`;
-}
-
-
-/* =========================================================
-   BYTES FILE
-   ========================================================= */
-
-bytesFile.addEventListener(
-    "change",
-    async function (e) {
-
-        const file =
-            e.target.files[0];
-
-        await processFile(
-            file,
-            "bytes"
-        );
-    }
-);
-
-
-/* =========================================================
-   META FILE
-   ========================================================= */
-
-metaFile.addEventListener(
-    "change",
-    async function (e) {
-
-        const file =
-            e.target.files[0];
-
-        await processFile(
-            file,
-            "meta"
-        );
-    }
-);
-
-
-/* =========================================================
-   FILE PROCESSOR
-   ========================================================= */
+// ============================================================
+// PROCESS FILE
+// ============================================================
 
 async function processFile(
     file,
@@ -557,40 +381,58 @@ async function processFile(
             ? bytesControls
             : metaControls;
 
-    const expectedExtension =
-        type === "bytes"
-            ? ".bytes"
-            : ".meta";
 
-    controls.innerHTML = "";
+    const info =
+        document.getElementById(
+            `${type}FileInfo`
+        );
 
-    updateFileInfo(
-        type,
-        null
-    );
+
+    const nameElement =
+        document.getElementById(
+            `${type}FileName`
+        );
+
+
+    const sizeElement =
+        document.getElementById(
+            `${type}FileSize`
+        );
+
+
+    controls.style.display =
+        "none";
+
+    controls.innerHTML =
+        "";
+
 
     if (!file) {
         return;
     }
 
 
-    /* Extension Check */
+    const extension =
+        type === "bytes"
+            ? ".bytes"
+            : ".meta";
+
 
     if (
         !file.name
             .toLowerCase()
-            .endsWith(expectedExtension)
+            .endsWith(extension)
     ) {
 
-        setResult(
-            output,
-            "error",
-            "INVALID FILE",
-            `Please select a ${expectedExtension} file.`
-        );
+        output.innerHTML =
+
+            `<span class="highlight">ERROR</span>\n` +
+
+            `Please select a ${extension} file.`;
+
 
         showToast(
-            `Invalid file. Please select ${expectedExtension}`,
+            `Invalid file! Please select ${extension}`,
             "error"
         );
 
@@ -598,25 +440,31 @@ async function processFile(
     }
 
 
-    updateFileInfo(
-        type,
-        file
-    );
+    info.style.display =
+        "flex";
 
 
-    /* Processing animation */
-
-    showProcessing(
-        output,
-        "Reading file..."
-    );
+    nameElement.textContent =
+        file.name;
 
 
-    /*
-     * Small delay makes the premium
-     * processing animation visible
-     */
-    await delay(250);
+    sizeElement.textContent =
+        formatFileSize(file.size);
+
+
+    output.innerHTML = `
+
+        <span class="processing">
+
+            PROCESSING
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </span>
+
+    `;
 
 
     try {
@@ -637,13 +485,20 @@ async function processFile(
 
                 pattern:
                     findBytesPattern(buffer)
+
             };
 
+
             handlePatternResult(
+
                 bytesData,
-                output,
-                controls,
+
+                bytesOutput,
+
+                bytesControls,
+
                 "bytes"
+
             );
 
         } else {
@@ -656,38 +511,46 @@ async function processFile(
 
                 pattern:
                     findMetaPattern(buffer)
+
             };
 
+
             handlePatternResult(
+
                 metaData,
-                output,
-                controls,
+
+                metaOutput,
+
+                metaControls,
+
                 "meta"
+
             );
         }
 
     } catch (error) {
 
-        console.error(error);
+        output.innerHTML =
 
-        setResult(
-            output,
-            "error",
-            "READ ERROR",
-            "Unable to read this file."
-        );
+            `<span class="highlight">ERROR</span>\n` +
+
+            `Unable to read file.`;
+
 
         showToast(
-            "Could not read the selected file.",
+            "Unable to read file!",
             "error"
         );
+
+
+        console.error(error);
     }
 }
 
 
-/* =========================================================
-   PATTERN RESULT
-   ========================================================= */
+// ============================================================
+// RESULT
+// ============================================================
 
 function handlePatternResult(
     data,
@@ -696,23 +559,34 @@ function handlePatternResult(
     type
 ) {
 
-    const pattern =
-        data.pattern;
+    if (!data.pattern) {
 
+        const patternText =
 
-    if (!pattern) {
-
-        setResult(
-            output,
-            "error",
-            "PATTERN NOT FOUND",
             type === "bytes"
-                ? "UID Pattern (38..42) not found."
-                : "UID Pattern (03..A2 03) not found."
-        );
+
+                ? "UID Pattern (38..42) not found!"
+
+                : "UID Pattern (03..A2 03) not found!";
+
+
+        output.innerHTML =
+
+            `<span class="highlight">` +
+
+            `${escapeHTML(data.name)}` +
+
+            `</span>\n` +
+
+            `<span style="color:#ff5370">` +
+
+            `${patternText}` +
+
+            `</span>`;
+
 
         showToast(
-            "UID pattern was not found in this file.",
+            "UID pattern not found!",
             "error"
         );
 
@@ -722,547 +596,496 @@ function handlePatternResult(
 
     const uidBytes =
         Array.from(
+
             data.current.slice(
-                pattern.middleStart,
-                pattern.end
+
+                data.pattern.middleStart,
+
+                data.pattern.end
+
             )
+
         );
 
 
-    let uidVal;
-
-    try {
-
-        uidVal =
-            decode_leb128(uidBytes);
-
-    } catch (error) {
-
-        setResult(
-            output,
-            "error",
-            "UID ERROR",
-            "Could not decode UID."
-        );
-
-        return;
-    }
+    const uidVal =
+        decode_leb128(uidBytes);
 
 
-    setResult(
-        output,
-        "success",
-        "UID FOUND",
-        `
-            File:
-            <span class="highlight">
-                ${escapeHTML(data.name)}
-            </span>
-            <br>
-            UID:
-            <span class="highlight">
-                ${uidVal.toString()}
-            </span>
-        `
-    );
+    output.innerHTML =
+
+        `File: ` +
+
+        `<span class="highlight">` +
+
+        `${escapeHTML(data.name)}` +
+
+        `</span>\n` +
+
+        `Found UID: ` +
+
+        `<span class="highlight">` +
+
+        `${uidVal.toString()}` +
+
+        `</span>`;
 
 
     buildControls(
-        controls,
+
         data,
+
         output,
+
+        controls,
+
         type
+
     );
 
 
     showToast(
-        `UID detected: ${uidVal.toString()}`
+        `${type.toUpperCase()} file loaded successfully`
     );
 }
 
 
-/* =========================================================
-   BUILD BUTTONS
-   ========================================================= */
+// ============================================================
+// CONTROLS
+// ============================================================
 
 function buildControls(
-    controls,
     data,
     output,
+    controls,
     type
 ) {
 
-    const prefix =
+    controls.style.display =
+        "flex";
+
+
+    const editId =
+
         type === "bytes"
-            ? "Bytes"
-            : "Meta";
+
+            ? "editBytes"
+
+            : "editMeta";
+
+
+    const removeId =
+
+        type === "bytes"
+
+            ? "removeBytes"
+
+            : "removeMeta";
+
+
+    const downloadId =
+
+        type === "bytes"
+
+            ? "downloadBytes"
+
+            : "downloadMeta";
 
 
     controls.innerHTML = `
 
         <button
             class="btn"
-            id="edit${prefix}"
-            type="button"
+            id="${editId}"
         >
-            ✎ &nbsp; EDIT UID
+            EDIT UID
         </button>
+
 
         <button
             class="btn secondary"
-            id="remove${prefix}"
-            type="button"
+            id="${removeId}"
         >
-            ◇ &nbsp; REMOVE UID
+            REMOVE UID
         </button>
 
+
         <button
-            class="btn download-btn"
-            id="download${prefix}"
-            type="button"
+            class="btn download"
+            id="${downloadId}"
         >
-            ↓ &nbsp; DOWNLOAD EDITED .${type.toUpperCase()}
+            DOWNLOAD .${type}
         </button>
+
     `;
 
 
     document
-        .getElementById(
-            `edit${prefix}`
-        )
+        .getElementById(editId)
         .onclick = () => {
 
-            openUidModal(
+            editUID(
                 data,
                 output,
                 type
             );
+
         };
 
 
     document
-        .getElementById(
-            `remove${prefix}`
-        )
+        .getElementById(removeId)
         .onclick = () => {
 
-            confirmRemoveUID(
+            removeUID(
                 data,
                 output,
                 type
             );
+
         };
 
 
     document
-        .getElementById(
-            `download${prefix}`
-        )
+        .getElementById(downloadId)
         .onclick = () => {
 
             downloadFile(data);
+
         };
 }
 
 
-/* =========================================================
-   PREMIUM UID MODAL
-   ========================================================= */
+// ============================================================
+// MODAL
+// ============================================================
 
-const uidModal =
-    document.getElementById(
-        "uidModal"
-    );
-
-const newUidInput =
-    document.getElementById(
-        "newUidInput"
-    );
-
-const modalError =
-    document.getElementById(
-        "modalError"
-    );
-
-const modalClose =
-    document.getElementById(
-        "modalClose"
-    );
-
-const modalCancel =
-    document.getElementById(
-        "modalCancel"
-    );
-
-const modalConfirm =
-    document.getElementById(
-        "modalConfirm"
-    );
+let modalCallback = null;
 
 
-let modalData = null;
+function openUIDModal(callback) {
+
+    const modal =
+        document.getElementById(
+            "uidModal"
+        );
 
 
-/**
- * Open UID editor
- */
-function openUidModal(
-    data,
-    output,
-    type
-) {
-
-    modalData = {
-
-        data,
-
-        output,
-
-        type
-    };
+    const input =
+        document.getElementById(
+            "newUidInput"
+        );
 
 
-    newUidInput.value = "";
+    const error =
+        document.getElementById(
+            "modalError"
+        );
 
-    modalError.textContent = "";
 
-    uidModal.classList.add(
+    modalCallback =
+        callback;
+
+
+    input.value =
+        "";
+
+
+    error.textContent =
+        "";
+
+
+    modal.classList.add(
         "active"
     );
 
 
     setTimeout(() => {
 
-        newUidInput.focus();
+        input.focus();
 
-    }, 250);
+    }, 100);
 }
 
 
-/**
- * Close modal
- */
-function closeUidModal() {
+function closeUIDModal() {
 
-    uidModal.classList.remove(
+    const modal =
+        document.getElementById(
+            "uidModal"
+        );
+
+
+    modal.classList.remove(
         "active"
     );
 
-    modalData = null;
+
+    modalCallback =
+        null;
 }
 
 
-modalClose.onclick =
-    closeUidModal;
+// Close
 
-modalCancel.onclick =
-    closeUidModal;
+document
+    .getElementById("modalClose")
+    .onclick =
+    closeUIDModal;
 
 
-/* Click outside */
+document
+    .getElementById("modalCancel")
+    .onclick =
+    closeUIDModal;
 
-uidModal.addEventListener(
-    "click",
-    function (e) {
 
-        if (
-            e.target === uidModal
-        ) {
+// Outside click
 
-            closeUidModal();
+document
+    .getElementById("uidModal")
+    .addEventListener(
+        "click",
+        function(e) {
+
+            if (e.target === this) {
+
+                closeUIDModal();
+
+            }
+
         }
-    }
-);
+    );
 
 
-/* ESC */
+// Confirm
 
-document.addEventListener(
-    "keydown",
-    function (e) {
+document
+    .getElementById("modalConfirm")
+    .onclick =
+    function() {
 
-        if (
-            e.key === "Escape" &&
-            uidModal.classList.contains(
-                "active"
-            )
-        ) {
-
-            closeUidModal();
-        }
-    }
-);
-
-
-/* Enter */
-
-newUidInput.addEventListener(
-    "keydown",
-    function (e) {
-
-        if (e.key === "Enter") {
-
-            e.preventDefault();
-
-            modalConfirm.click();
-        }
-    }
-);
-
-
-/* Only digits */
-
-newUidInput.addEventListener(
-    "input",
-    function () {
-
-        this.value =
-            this.value.replace(
-                /\D/g,
-                ""
+        const input =
+            document.getElementById(
+                "newUidInput"
             );
 
-        modalError.textContent = "";
-    }
-);
+
+        const error =
+            document.getElementById(
+                "modalError"
+            );
 
 
-/* Confirm */
-
-modalConfirm.onclick =
-    function () {
-
-        if (!modalData) {
-            return;
-        }
+        const value =
+            input.value.trim();
 
 
-        const newValStr =
-            newUidInput.value.trim();
+        if (!/^\d+$/.test(value)) {
 
-
-        if (!newValStr) {
-
-            modalError.textContent =
-                "Please enter a UID.";
-
-            newUidInput.focus();
-
-            return;
-        }
-
-
-        if (!/^\d+$/.test(newValStr)) {
-
-            modalError.textContent =
+            error.textContent =
                 "Only numbers are allowed.";
 
+            input.focus();
+
             return;
         }
 
 
-        try {
+        if (value.length > 30) {
 
-            const newVal =
-                BigInt(newValStr);
+            error.textContent =
+                "UID is too long.";
 
-            editUID(
-                modalData.data,
-                modalData.output,
-                modalData.type,
-                newVal
-            );
+            input.focus();
 
-            closeUidModal();
-
-        } catch (error) {
-
-            console.error(error);
-
-            modalError.textContent =
-                "Invalid UID value.";
+            return;
         }
+
+
+        if (modalCallback) {
+
+            modalCallback(value);
+
+        }
+
+
+        closeUIDModal();
+
     };
 
 
-/* =========================================================
-   EDIT UID
-   ========================================================= */
+// Keyboard
+
+document
+    .getElementById("newUidInput")
+    .addEventListener(
+        "keydown",
+        function(e) {
+
+            if (e.key === "Enter") {
+
+                document
+                    .getElementById(
+                        "modalConfirm"
+                    )
+                    .click();
+
+            }
+
+
+            if (e.key === "Escape") {
+
+                closeUIDModal();
+
+            }
+
+        }
+    );
+
+
+// ============================================================
+// EDIT UID
+// ============================================================
 
 function editUID(
     data,
     output,
-    type,
-    newVal
-) {
-
-    const pattern =
-        data.pattern;
-
-
-    if (!pattern) {
-        return;
-    }
-
-
-    showProcessing(
-        output,
-        "Updating UID..."
-    );
-
-
-    setTimeout(() => {
-
-        try {
-
-            const encoded =
-                encode_uleb128(
-                    newVal
-                );
-
-
-            const before =
-                data.current.slice(
-                    0,
-                    pattern.middleStart
-                );
-
-
-            const after =
-                data.current.slice(
-                    pattern.end
-                );
-
-
-            const outBytes =
-                new Uint8Array(
-                    before.length +
-                    encoded.length +
-                    after.length
-                );
-
-
-            outBytes.set(
-                before,
-                0
-            );
-
-
-            outBytes.set(
-                encoded,
-                before.length
-            );
-
-
-            outBytes.set(
-                after,
-                before.length +
-                encoded.length
-            );
-
-
-            data.current =
-                outBytes;
-
-
-            /*
-             * Re-scan.
-             *
-             * Important because the new
-             * UID can have a different size.
-             */
-
-            if (
-                type === "bytes"
-            ) {
-
-                data.pattern =
-                    findBytesPattern(
-                        outBytes
-                    );
-
-            } else {
-
-                data.pattern =
-                    findMetaPattern(
-                        outBytes
-                    );
-            }
-
-
-            setResult(
-                output,
-                "success",
-                "UID UPDATED",
-                `
-                    File:
-                    <span class="highlight">
-                        ${escapeHTML(data.name)}
-                    </span>
-                    <br>
-                    New UID:
-                    <span class="highlight">
-                        ${newVal.toString()}
-                    </span>
-                `
-            );
-
-
-            showToast(
-                "UID updated successfully!"
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            setResult(
-                output,
-                "error",
-                "UPDATE ERROR",
-                "Unable to update UID."
-            );
-
-            showToast(
-                "UID update failed.",
-                "error"
-            );
-
-        }
-
-    }, 350);
-}
-
-
-/* =========================================================
-   REMOVE UID
-   ========================================================= */
-
-function confirmRemoveUID(
-    data,
-    output,
     type
 ) {
 
-    const confirmed =
-        window.confirm(
-            "Remove UID?\n\nThe UID will be replaced with 0."
-        );
+    const pat =
+        data.pattern;
 
 
-    if (!confirmed) {
+    if (!pat) {
         return;
     }
 
 
-    removeUID(
-        data,
-        output,
-        type
+    openUIDModal(
+        function(newValStr) {
+
+            try {
+
+                const newVal =
+                    BigInt(newValStr);
+
+
+                const enc =
+                    encode_uleb128(
+                        newVal
+                    );
+
+
+                const before =
+                    data.current.slice(
+                        0,
+                        pat.middleStart
+                    );
+
+
+                const after =
+                    data.current.slice(
+                        pat.end
+                    );
+
+
+                const outBytes =
+                    new Uint8Array(
+
+                        before.length +
+
+                        enc.length +
+
+                        after.length
+
+                    );
+
+
+                outBytes.set(
+                    before,
+                    0
+                );
+
+
+                outBytes.set(
+                    enc,
+                    before.length
+                );
+
+
+                outBytes.set(
+                    after,
+                    before.length +
+                    enc.length
+                );
+
+
+                data.current =
+                    outBytes;
+
+
+                if (type === "bytes") {
+
+                    data.pattern =
+                        findBytesPattern(
+                            outBytes
+                        );
+
+                } else {
+
+                    data.pattern =
+                        findMetaPattern(
+                            outBytes
+                        );
+
+                }
+
+
+                output.innerHTML =
+
+                    `File: ` +
+
+                    `<span class="highlight">` +
+
+                    `${escapeHTML(data.name)}` +
+
+                    `</span>\n` +
+
+                    `New UID: ` +
+
+                    `<span class="highlight">` +
+
+                    `${newVal.toString()}` +
+
+                    `</span>`;
+
+
+                showToast(
+                    "UID updated successfully!"
+                );
+
+
+            } catch (error) {
+
+                showToast(
+                    "Failed to update UID!",
+                    "error"
+                );
+
+
+                console.error(error);
+            }
+
+        }
     );
 }
 
+
+// ============================================================
+// REMOVE UID
+// ============================================================
 
 function removeUID(
     data,
@@ -1270,102 +1093,361 @@ function removeUID(
     type
 ) {
 
-    const pattern =
+    const pat =
         data.pattern;
 
 
-    if (!pattern) {
+    if (!pat) {
         return;
     }
 
 
-    showProcessing(
-        output,
-        "Removing UID..."
+    const zeroByte =
+        new Uint8Array([
+            0x00
+        ]);
+
+
+    const before =
+        data.current.slice(
+            0,
+            pat.middleStart
+        );
+
+
+    const after =
+        data.current.slice(
+            pat.end
+        );
+
+
+    const outBytes =
+        new Uint8Array(
+
+            before.length +
+
+            zeroByte.length +
+
+            after.length
+
+        );
+
+
+    outBytes.set(
+        before,
+        0
     );
+
+
+    outBytes.set(
+        zeroByte,
+        before.length
+    );
+
+
+    outBytes.set(
+        after,
+        before.length +
+        zeroByte.length
+    );
+
+
+    data.current =
+        outBytes;
+
+
+    if (type === "bytes") {
+
+        data.pattern =
+            findBytesPattern(
+                outBytes
+            );
+
+    } else {
+
+        data.pattern =
+            findMetaPattern(
+                outBytes
+            );
+
+    }
+
+
+    output.innerHTML =
+
+        `File: ` +
+
+        `<span class="highlight">` +
+
+        `${escapeHTML(data.name)}` +
+
+        `</span>\n` +
+
+        `UID Removed (Set to 0)`;
+
+
+    showToast(
+        "UID removed successfully!"
+    );
+}
+
+
+// ============================================================
+// DOWNLOAD
+// ============================================================
+
+function downloadFile(data) {
+
+    if (!data.current) {
+
+        showToast(
+            "No file available!",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const blob =
+        new Blob(
+            [data.current],
+            {
+                type:
+                    "application/octet-stream"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        url;
+
+
+    a.download =
+        `EDITED_${data.name}`;
+
+
+    document
+        .body
+        .appendChild(a);
+
+
+    a.click();
+
+
+    document
+        .body
+        .removeChild(a);
 
 
     setTimeout(() => {
 
-        try {
+        URL.revokeObjectURL(url);
 
-            /*
-             * ULEB128 zero
-             * = 0x00
-             */
-
-            const zeroByte =
-                new Uint8Array([
-                    0x00
-                ]);
+    }, 2000);
 
 
-            const before =
-                data.current.slice(
-                    0,
-                    pattern.middleStart
-                );
+    showToast(
+        `Downloaded: EDITED_${data.name}`
+    );
+}
 
 
-            const after =
-                data.current.slice(
-                    pattern.end
-                );
+// ============================================================
+// FILE INPUT
+// ============================================================
+
+bytesFile.addEventListener(
+    "change",
+    function(e) {
+
+        processFile(
+            e.target.files[0],
+            "bytes"
+        );
+
+    }
+);
 
 
-            const outBytes =
-                new Uint8Array(
-                    before.length +
-                    zeroByte.length +
-                    after.length
-                );
+metaFile.addEventListener(
+    "change",
+    function(e) {
+
+        processFile(
+            e.target.files[0],
+            "meta"
+        );
+
+    }
+);
 
 
-            outBytes.set(
-                before,
-                0
-            );
+// ============================================================
+// UPLOAD ZONE CLICK
+// ============================================================
+
+bytesDropZone.addEventListener(
+    "click",
+    function(e) {
+
+        if (e.target !== bytesFile) {
+
+            bytesFile.click();
+
+        }
+
+    }
+);
 
 
-            outBytes.set(
-                zeroByte,
-                before.length
-            );
+metaDropZone.addEventListener(
+    "click",
+    function(e) {
+
+        if (e.target !== metaFile) {
+
+            metaFile.click();
+
+        }
+
+    }
+);
 
 
-            outBytes.set(
-                after,
-                before.length +
-                zeroByte.length
-            );
+// ============================================================
+// DRAG & DROP
+// ============================================================
 
+function setupDropZone(
+    zone,
+    input,
+    type
+) {
 
-            data.current =
-                outBytes;
+    [
+        "dragenter",
+        "dragover"
 
+    ].forEach(
+        eventName => {
 
-            if (
-                type === "bytes"
-            ) {
+            zone.addEventListener(
+                eventName,
+                function(e) {
 
-                data.pattern =
-                    findBytesPattern(
-                        outBytes
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    zone.classList.add(
+                        "dragover"
                     );
 
-            } else {
+                }
+            );
 
-                data.pattern =
-                    findMetaPattern(
-                        outBytes
+        }
+    );
+
+
+    [
+        "dragleave",
+        "drop"
+
+    ].forEach(
+        eventName => {
+
+            zone.addEventListener(
+                eventName,
+                function(e) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    zone.classList.remove(
+                        "dragover"
                     );
+
+                }
+            );
+
+        }
+    );
+
+
+    zone.addEventListener(
+        "drop",
+        function(e) {
+
+            const files =
+                e.dataTransfer.files;
+
+
+            if (!files.length) {
+                return;
             }
 
 
-            setResult(
-                output,
-                "success",
-                "UID REMOVED",
+            const file =
+                files[0];
+
+
+            processFile(
+                file,
+                type
+            );
+
+        }
+    );
+}
+
+
+setupDropZone(
+    bytesDropZone,
+    bytesFile,
+    "bytes"
+);
+
+
+setupDropZone(
+    metaDropZone,
+    metaFile,
+    "meta"
+);
+
+
+// ============================================================
+// GLOBAL DRAG PREVENT
+// ============================================================
+
+document.addEventListener(
+    "dragover",
+    function(e) {
+
+        e.preventDefault();
+
+    }
+);
+
+
+document.addEventListener(
+    "drop",
+    function(e) {
+
+        e.preventDefault();
+
+    }
+);                "UID REMOVED",
                 `
                     File:
                     <span class="highlight">

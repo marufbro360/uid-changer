@@ -4,32 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="theme-color" content="#05080d">
-  <meta name="description" content="Premium Free Fire Craftland UID Editing Tool">
-
-  <title>Craftland UID Editor</title>
+  <title>CRAFTER MARUF — UID EDITOR</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet"
+  >
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- ================= BACKGROUND ================= -->
-
-  <div class="background">
-    <div class="grid"></div>
-
-    <div class="orb orb-one"></div>
-    <div class="orb orb-two"></div>
-    <div class="orb orb-three"></div>
-
-    <div class="scanline"></div>
-  </div>
+  <!-- Background -->
+  <div class="bg-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="scanline"></div>
 
 
   <!-- ================= TOP BAR ================= -->
@@ -38,75 +32,75 @@
 
     <div class="brand">
 
-      <div class="brand-icon">
-        <span>UID</span>
+      <!-- শুধু UID-এর জায়গায় profile.png -->
+      <div class="brand-icon profile-logo">
+        <img src="profile.png" alt="Profile Logo">
       </div>
 
       <div class="brand-text">
-        <div class="brand-title">
-          CRAFTLAND
+
+        <!-- RGB Name -->
+        <div class="rgb-name">
+          CRAFTER MARUF
         </div>
 
         <div class="brand-subtitle">
-          UID EDITOR
+          CRAFTLAND UID EDITOR
         </div>
+
       </div>
 
     </div>
 
+
     <div class="online-status">
+
       <span class="status-dot"></span>
+
       SYSTEM ONLINE
+
     </div>
 
   </header>
 
 
+
   <!-- ================= MAIN ================= -->
 
-  <main class="main-container">
+  <main>
+
 
     <!-- HERO -->
 
     <section class="hero">
 
       <div class="hero-badge">
-        <span class="badge-dot"></span>
+
+        <span></span>
+
         PREMIUM EDITING SYSTEM
+
       </div>
+
 
       <h1>
+
         CRAFTLAND
-        <span>UID EDITOR</span>
+
+        <strong>
+          UID EDITOR
+        </strong>
+
       </h1>
 
+
       <p>
-        Edit your Craftland map UID with a fast,
-        secure and modern browser-based tool.
+        Edit your Craftland UID files quickly, securely and directly
+        inside your browser.
       </p>
 
-      <div class="hero-line"></div>
-
-      <div class="features">
-
-        <div class="feature">
-          <span class="feature-icon">⚡</span>
-          <span>FAST</span>
-        </div>
-
-        <div class="feature">
-          <span class="feature-icon">🔒</span>
-          <span>LOCAL PROCESSING</span>
-        </div>
-
-        <div class="feature">
-          <span class="feature-icon">◆</span>
-          <span>NO SERVER UPLOAD</span>
-        </div>
-
-      </div>
-
     </section>
+
 
 
     <!-- ================= EDITOR GRID ================= -->
@@ -114,43 +108,36 @@
     <section class="editor-grid">
 
 
-      <!-- ================= BYTES CARD ================= -->
+      <!-- ================= BYTES ================= -->
 
-      <article class="editor-card bytes-card">
-
-        <div class="card-glow"></div>
+      <div class="editor-card bytes-card">
 
         <div class="card-header">
 
-          <div class="file-icon bytes-icon">
-            <span>01</span>
+          <div class="card-icon">
+            ◈
           </div>
 
-          <div class="card-title-area">
+          <div>
 
             <h2>
-              BYTES FILE
+              Bytes File Editing
             </h2>
 
             <span>
-              CRAFTLAND DATA
+              CRAFTLAND .BYTES
             </span>
 
-          </div>
-
-          <div class="file-type">
-            .BYTES
           </div>
 
         </div>
 
 
-        <!-- UPLOAD AREA -->
+        <!-- Upload -->
 
         <div
           class="upload-zone"
           id="bytesDropZone"
-          data-type="bytes"
         >
 
           <input
@@ -159,39 +146,34 @@
             accept=".bytes"
           >
 
-          <div class="upload-animation">
-
-            <div class="upload-icon">
-              ↑
-            </div>
-
+          <div class="upload-icon">
+            ⇧
           </div>
 
           <h3>
-            DROP YOUR FILE HERE
+            Upload .bytes File
           </h3>
 
           <p>
-            or click to browse from your device
+            Click here or drag & drop your file
           </p>
 
-          <div class="supported">
-            SUPPORTED FORMAT
-            <strong>.BYTES</strong>
-          </div>
+          <small>
+            Supported format: .bytes
+          </small>
 
         </div>
 
 
-        <!-- FILE INFO -->
+        <!-- File Info -->
 
         <div
           class="file-info"
           id="bytesFileInfo"
         >
 
-          <div class="file-info-icon">
-            ▣
+          <div class="file-icon">
+            ◫
           </div>
 
           <div class="file-details">
@@ -201,89 +183,75 @@
             </strong>
 
             <span id="bytesFileSize">
-              Waiting for file...
+              —
             </span>
 
-          </div>
-
-          <div class="file-check">
-            ✓
           </div>
 
         </div>
 
 
-        <!-- OUTPUT -->
+        <!-- Result -->
 
-        <div
-          class="result-box"
-          id="bytesOutput"
-        >
+        <div class="result-box">
 
-          <div class="result-icon">
-            ◌
+          <div class="result-title">
+
+            <span class="result-dot"></span>
+
+            FILE STATUS
+
           </div>
 
-          <div>
-            <span class="result-label">
-              STATUS
-            </span>
-
-            <strong>
-              Awaiting .bytes file...
-            </strong>
-          </div>
+          <p id="bytesOutput">
+            Awaiting file...
+          </p>
 
         </div>
 
 
-        <!-- CONTROLS -->
+        <!-- Controls -->
 
         <div
           id="bytesControls"
           class="controls"
+          style="display:none"
         ></div>
 
-      </article>
+      </div>
 
 
-      <!-- ================= META CARD ================= -->
 
-      <article class="editor-card meta-card">
+      <!-- ================= META ================= -->
 
-        <div class="card-glow"></div>
+      <div class="editor-card meta-card">
 
         <div class="card-header">
 
-          <div class="file-icon meta-icon">
-            <span>02</span>
+          <div class="card-icon">
+            ◈
           </div>
 
-          <div class="card-title-area">
+          <div>
 
             <h2>
-              META FILE
+              Meta File Editing
             </h2>
 
             <span>
-              CRAFTLAND METADATA
+              CRAFTLAND .META
             </span>
 
-          </div>
-
-          <div class="file-type">
-            .META
           </div>
 
         </div>
 
 
-        <!-- UPLOAD AREA -->
+        <!-- Upload -->
 
         <div
           class="upload-zone"
           id="metaDropZone"
-          data-type="meta"
         >
 
           <input
@@ -292,39 +260,34 @@
             accept=".meta"
           >
 
-          <div class="upload-animation">
-
-            <div class="upload-icon">
-              ↑
-            </div>
-
+          <div class="upload-icon">
+            ⇧
           </div>
 
           <h3>
-            DROP YOUR FILE HERE
+            Upload .meta File
           </h3>
 
           <p>
-            or click to browse from your device
+            Click here or drag & drop your file
           </p>
 
-          <div class="supported">
-            SUPPORTED FORMAT
-            <strong>.META</strong>
-          </div>
+          <small>
+            Supported format: .meta
+          </small>
 
         </div>
 
 
-        <!-- FILE INFO -->
+        <!-- File Info -->
 
         <div
           class="file-info"
           id="metaFileInfo"
         >
 
-          <div class="file-info-icon">
-            ▣
+          <div class="file-icon">
+            ◫
           </div>
 
           <div class="file-details">
@@ -334,116 +297,248 @@
             </strong>
 
             <span id="metaFileSize">
-              Waiting for file...
+              —
             </span>
 
-          </div>
-
-          <div class="file-check">
-            ✓
           </div>
 
         </div>
 
 
-        <!-- OUTPUT -->
+        <!-- Result -->
 
-        <div
-          class="result-box"
-          id="metaOutput"
-        >
+        <div class="result-box">
 
-          <div class="result-icon">
-            ◌
+          <div class="result-title">
+
+            <span class="result-dot"></span>
+
+            FILE STATUS
+
           </div>
 
-          <div>
-            <span class="result-label">
-              STATUS
-            </span>
-
-            <strong>
-              Awaiting .meta file...
-            </strong>
-          </div>
+          <p id="metaOutput">
+            Awaiting file...
+          </p>
 
         </div>
 
 
-        <!-- CONTROLS -->
+        <!-- Controls -->
 
         <div
           id="metaControls"
           class="controls"
+          style="display:none"
         ></div>
 
-      </article>
+      </div>
 
     </section>
 
 
-    <!-- ================= SECURITY INFO ================= -->
+
+    <!-- ================= SECURITY ================= -->
 
     <section class="security-panel">
 
       <div class="security-icon">
-        🔐
+        ⛨
       </div>
+
 
       <div class="security-text">
 
-        <strong>
-          YOUR FILES STAY ON YOUR DEVICE
-        </strong>
+        <h3>
+          LOCAL PROCESSING
+        </h3>
 
-        <span>
-          All file processing happens locally inside your browser.
-          Files are not uploaded to any external server.
-        </span>
+        <p>
+          Your files are processed directly inside your browser.
+          No file upload or server storage is required.
+        </p>
 
       </div>
 
-      <div class="security-badge">
-        LOCAL
+
+      <div class="secure-badge">
+        SECURE
       </div>
 
     </section>
 
 
-    <!-- ================= FOOTER STATS ================= -->
 
-    <div class="stats">
+    <!-- ================= STATS ================= -->
+
+    <section class="stats">
 
       <div class="stat">
+
         <strong>
           100%
         </strong>
+
         <span>
           LOCAL
         </span>
+
       </div>
 
-      <div class="stat-divider"></div>
 
       <div class="stat">
+
         <strong>
-          02
+          ULEB128
         </strong>
+
         <span>
-          FILE TYPES
+          SUPPORT
         </span>
+
       </div>
 
-      <div class="stat-divider"></div>
 
       <div class="stat">
+
         <strong>
           FAST
         </strong>
+
         <span>
           PROCESSING
         </span>
+
       </div>
+
+
+      <div class="stat">
+
+        <strong>
+          FREE
+        </strong>
+
+        <span>
+          TO USE
+        </span>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- ================= UID MODAL ================= -->
+
+  <div
+    class="modal-overlay"
+    id="uidModal"
+  >
+
+    <div class="uid-modal">
+
+      <button
+        class="modal-close"
+        id="modalClose"
+      >
+        ×
+      </button>
+
+
+      <div class="modal-icon">
+        #
+      </div>
+
+
+      <h2>
+        EDIT UID
+      </h2>
+
+
+      <p>
+        Enter the new Craftland UID
+      </p>
+
+
+      <input
+        type="text"
+        id="newUidInput"
+        inputmode="numeric"
+        placeholder="Enter UID"
+        autocomplete="off"
+      >
+
+
+      <div
+        class="modal-error"
+        id="modalError"
+      ></div>
+
+
+      <div class="modal-buttons">
+
+        <button
+          class="modal-btn cancel"
+          id="modalCancel"
+        >
+          CANCEL
+        </button>
+
+
+        <button
+          class="modal-btn confirm"
+          id="modalConfirm"
+        >
+          UPDATE UID
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================= TOAST ================= -->
+
+  <div
+    class="toast-container"
+    id="toastContainer"
+  ></div>
+
+
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer>
+
+    <div class="footer-line"></div>
+
+    <p>
+
+      © 2026 CRAFTER MARUF
+
+      <span>•</span>
+
+      CRAFTLAND UID EDITOR
+
+    </p>
+
+
+    <small>
+      PREMIUM CYBER EDITION
+    </small>
+
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>     </div>
 
     </div>
 
