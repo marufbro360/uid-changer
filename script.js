@@ -16,8 +16,7 @@ function decode_leb128(bytes) {
 
         const b = BigInt(bytes[i]);
 
-        result |=
-            (b & 0x7Fn) << shift;
+        result |= (b & 0x7Fn) << shift;
 
         if ((b & 0x80n) === 0n) {
             break;
@@ -118,13 +117,9 @@ function findBytesPattern(data) {
                     ) {
 
                         return {
-
                             start: j,
-
                             middleStart: j + 1,
-
                             end: i
-
                         };
                     }
 
@@ -174,13 +169,9 @@ function findMetaPattern(data) {
                     ) {
 
                         return {
-
                             start: j,
-
                             middleStart: j + 1,
-
                             end: i - 1
-
                         };
                     }
 
@@ -199,21 +190,15 @@ function findMetaPattern(data) {
 // ============================================================
 
 let bytesData = {
-
     current: null,
-
     name: "",
-
     pattern: null
 };
 
 
 let metaData = {
-
     current: null,
-
     name: "",
-
     pattern: null
 };
 
@@ -257,9 +242,11 @@ function showToast(
 ) {
 
     const container =
-        document.getElementById(
-            "toastContainer"
-        );
+        document.getElementById("toastContainer");
+
+    if (!container) {
+        return;
+    }
 
     const toast =
         document.createElement("div");
@@ -334,31 +321,11 @@ function formatFileSize(bytes) {
 function escapeHTML(value) {
 
     return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
@@ -381,18 +348,15 @@ async function processFile(
             ? bytesControls
             : metaControls;
 
-
     const info =
         document.getElementById(
             `${type}FileInfo`
         );
 
-
     const nameElement =
         document.getElementById(
             `${type}FileName`
         );
-
 
     const sizeElement =
         document.getElementById(
@@ -400,11 +364,13 @@ async function processFile(
         );
 
 
-    controls.style.display =
-        "none";
+    if (!output || !controls) {
+        return;
+    }
 
-    controls.innerHTML =
-        "";
+
+    controls.style.display = "none";
+    controls.innerHTML = "";
 
 
     if (!file) {
@@ -425,9 +391,7 @@ async function processFile(
     ) {
 
         output.innerHTML =
-
             `<span class="highlight">ERROR</span>\n` +
-
             `Please select a ${extension} file.`;
 
 
@@ -440,30 +404,30 @@ async function processFile(
     }
 
 
-    info.style.display =
-        "flex";
+    if (info) {
+        info.style.display = "flex";
+    }
 
 
-    nameElement.textContent =
-        file.name;
+    if (nameElement) {
+        nameElement.textContent =
+            file.name;
+    }
 
 
-    sizeElement.textContent =
-        formatFileSize(file.size);
+    if (sizeElement) {
+        sizeElement.textContent =
+            formatFileSize(file.size);
+    }
 
 
     output.innerHTML = `
-
         <span class="processing">
-
             PROCESSING
-
             <span></span>
             <span></span>
             <span></span>
-
         </span>
-
     `;
 
 
@@ -478,62 +442,44 @@ async function processFile(
         if (type === "bytes") {
 
             bytesData = {
-
                 current: buffer,
-
                 name: file.name,
-
                 pattern:
                     findBytesPattern(buffer)
-
             };
 
 
             handlePatternResult(
-
                 bytesData,
-
                 bytesOutput,
-
                 bytesControls,
-
                 "bytes"
-
             );
 
         } else {
 
             metaData = {
-
                 current: buffer,
-
                 name: file.name,
-
                 pattern:
                     findMetaPattern(buffer)
-
             };
 
 
             handlePatternResult(
-
                 metaData,
-
                 metaOutput,
-
                 metaControls,
-
                 "meta"
-
             );
         }
 
     } catch (error) {
 
+        console.error(error);
+
         output.innerHTML =
-
             `<span class="highlight">ERROR</span>\n` +
-
             `Unable to read file.`;
 
 
@@ -541,9 +487,6 @@ async function processFile(
             "Unable to read file!",
             "error"
         );
-
-
-        console.error(error);
     }
 }
 
@@ -562,26 +505,18 @@ function handlePatternResult(
     if (!data.pattern) {
 
         const patternText =
-
             type === "bytes"
-
                 ? "UID Pattern (38..42) not found!"
-
                 : "UID Pattern (03..A2 03) not found!";
 
 
         output.innerHTML =
-
             `<span class="highlight">` +
-
             `${escapeHTML(data.name)}` +
-
             `</span>\n` +
 
             `<span style="color:#ff5370">` +
-
             `${patternText}` +
-
             `</span>`;
 
 
@@ -596,15 +531,10 @@ function handlePatternResult(
 
     const uidBytes =
         Array.from(
-
             data.current.slice(
-
                 data.pattern.middleStart,
-
                 data.pattern.end
-
             )
-
         );
 
 
@@ -613,34 +543,24 @@ function handlePatternResult(
 
 
     output.innerHTML =
-
         `File: ` +
 
         `<span class="highlight">` +
-
         `${escapeHTML(data.name)}` +
-
         `</span>\n` +
 
         `Found UID: ` +
 
         `<span class="highlight">` +
-
         `${uidVal.toString()}` +
-
         `</span>`;
 
 
     buildControls(
-
         data,
-
         output,
-
         controls,
-
         type
-
     );
 
 
@@ -661,34 +581,24 @@ function buildControls(
     type
 ) {
 
-    controls.style.display =
-        "flex";
+    controls.style.display = "flex";
 
 
     const editId =
-
         type === "bytes"
-
             ? "editBytes"
-
             : "editMeta";
 
 
     const removeId =
-
         type === "bytes"
-
             ? "removeBytes"
-
             : "removeMeta";
 
 
     const downloadId =
-
         type === "bytes"
-
             ? "downloadBytes"
-
             : "downloadMeta";
 
 
@@ -697,6 +607,7 @@ function buildControls(
         <button
             class="btn"
             id="${editId}"
+            type="button"
         >
             EDIT UID
         </button>
@@ -705,6 +616,7 @@ function buildControls(
         <button
             class="btn secondary"
             id="${removeId}"
+            type="button"
         >
             REMOVE UID
         </button>
@@ -713,6 +625,7 @@ function buildControls(
         <button
             class="btn download"
             id="${downloadId}"
+            type="button"
         >
             DOWNLOAD .${type}
         </button>
@@ -720,9 +633,19 @@ function buildControls(
     `;
 
 
-    document
-        .getElementById(editId)
-        .onclick = () => {
+    const editButton =
+        document.getElementById(editId);
+
+    const removeButton =
+        document.getElementById(removeId);
+
+    const downloadButton =
+        document.getElementById(downloadId);
+
+
+    if (editButton) {
+
+        editButton.onclick = () => {
 
             editUID(
                 data,
@@ -731,11 +654,12 @@ function buildControls(
             );
 
         };
+    }
 
 
-    document
-        .getElementById(removeId)
-        .onclick = () => {
+    if (removeButton) {
+
+        removeButton.onclick = () => {
 
             removeUID(
                 data,
@@ -744,20 +668,22 @@ function buildControls(
             );
 
         };
+    }
 
 
-    document
-        .getElementById(downloadId)
-        .onclick = () => {
+    if (downloadButton) {
+
+        downloadButton.onclick = () => {
 
             downloadFile(data);
 
         };
+    }
 }
 
 
 // ============================================================
-// MODAL
+// UID MODAL
 // ============================================================
 
 let modalCallback = null;
@@ -766,38 +692,29 @@ let modalCallback = null;
 function openUIDModal(callback) {
 
     const modal =
-        document.getElementById(
-            "uidModal"
-        );
-
+        document.getElementById("uidModal");
 
     const input =
-        document.getElementById(
-            "newUidInput"
-        );
-
+        document.getElementById("newUidInput");
 
     const error =
-        document.getElementById(
-            "modalError"
-        );
+        document.getElementById("modalError");
+
+
+    if (!modal || !input || !error) {
+        return;
+    }
 
 
     modalCallback =
         callback;
 
 
-    input.value =
-        "";
+    input.value = "";
+    error.textContent = "";
 
 
-    error.textContent =
-        "";
-
-
-    modal.classList.add(
-        "active"
-    );
+    modal.classList.add("active");
 
 
     setTimeout(() => {
@@ -811,14 +728,15 @@ function openUIDModal(callback) {
 function closeUIDModal() {
 
     const modal =
-        document.getElementById(
-            "uidModal"
-        );
+        document.getElementById("uidModal");
 
 
-    modal.classList.remove(
-        "active"
-    );
+    if (!modal) {
+        return;
+    }
+
+
+    modal.classList.remove("active");
 
 
     modalCallback =
@@ -826,25 +744,43 @@ function closeUIDModal() {
 }
 
 
-// Close
+// ============================================================
+// MODAL EVENTS
+// ============================================================
 
-document
-    .getElementById("modalClose")
-    .onclick =
-    closeUIDModal;
+const modalClose =
+    document.getElementById("modalClose");
+
+const modalCancel =
+    document.getElementById("modalCancel");
+
+const modalConfirm =
+    document.getElementById("modalConfirm");
+
+const uidModal =
+    document.getElementById("uidModal");
+
+const newUidInput =
+    document.getElementById("newUidInput");
 
 
-document
-    .getElementById("modalCancel")
-    .onclick =
-    closeUIDModal;
+if (modalClose) {
+
+    modalClose.onclick =
+        closeUIDModal;
+}
 
 
-// Outside click
+if (modalCancel) {
 
-document
-    .getElementById("uidModal")
-    .addEventListener(
+    modalCancel.onclick =
+        closeUIDModal;
+}
+
+
+if (uidModal) {
+
+    uidModal.addEventListener(
         "click",
         function(e) {
 
@@ -856,81 +792,79 @@ document
 
         }
     );
+}
 
 
-// Confirm
+if (modalConfirm) {
 
-document
-    .getElementById("modalConfirm")
-    .onclick =
-    function() {
+    modalConfirm.onclick =
+        function() {
 
-        const input =
-            document.getElementById(
-                "newUidInput"
-            );
+            const input =
+                document.getElementById(
+                    "newUidInput"
+                );
 
-
-        const error =
-            document.getElementById(
-                "modalError"
-            );
+            const error =
+                document.getElementById(
+                    "modalError"
+                );
 
 
-        const value =
-            input.value.trim();
+            if (!input || !error) {
+                return;
+            }
 
 
-        if (!/^\d+$/.test(value)) {
-
-            error.textContent =
-                "Only numbers are allowed.";
-
-            input.focus();
-
-            return;
-        }
+            const value =
+                input.value.trim();
 
 
-        if (value.length > 30) {
+            if (!/^\d+$/.test(value)) {
 
-            error.textContent =
-                "UID is too long.";
+                error.textContent =
+                    "Only numbers are allowed.";
 
-            input.focus();
+                input.focus();
 
-            return;
-        }
-
-
-        if (modalCallback) {
-
-            modalCallback(value);
-
-        }
+                return;
+            }
 
 
-        closeUIDModal();
+            if (value.length > 30) {
 
-    };
+                error.textContent =
+                    "UID is too long.";
+
+                input.focus();
+
+                return;
+            }
 
 
-// Keyboard
+            if (modalCallback) {
 
-document
-    .getElementById("newUidInput")
-    .addEventListener(
+                modalCallback(value);
+
+            }
+
+
+            closeUIDModal();
+        };
+}
+
+
+if (newUidInput) {
+
+    newUidInput.addEventListener(
         "keydown",
         function(e) {
 
             if (e.key === "Enter") {
 
-                document
-                    .getElementById(
-                        "modalConfirm"
-                    )
-                    .click();
-
+                if (modalConfirm) {
+                    modalConfirm.click();
+                }
             }
 
 
@@ -942,6 +876,7 @@ document
 
         }
     );
+}
 
 
 // ============================================================
@@ -993,13 +928,9 @@ function editUID(
 
                 const outBytes =
                     new Uint8Array(
-
                         before.length +
-
                         enc.length +
-
                         after.length
-
                     );
 
 
@@ -1039,26 +970,20 @@ function editUID(
                         findMetaPattern(
                             outBytes
                         );
-
                 }
 
 
                 output.innerHTML =
-
                     `File: ` +
 
                     `<span class="highlight">` +
-
                     `${escapeHTML(data.name)}` +
-
                     `</span>\n` +
 
                     `New UID: ` +
 
                     `<span class="highlight">` +
-
                     `${newVal.toString()}` +
-
                     `</span>`;
 
 
@@ -1066,18 +991,15 @@ function editUID(
                     "UID updated successfully!"
                 );
 
-
             } catch (error) {
+
+                console.error(error);
 
                 showToast(
                     "Failed to update UID!",
                     "error"
                 );
-
-
-                console.error(error);
             }
-
         }
     );
 }
@@ -1102,93 +1024,95 @@ function removeUID(
     }
 
 
-    const zeroByte =
-        new Uint8Array([
-            0x00
-        ]);
+    try {
+
+        const zeroByte =
+            new Uint8Array([0x00]);
 
 
-    const before =
-        data.current.slice(
-            0,
-            pat.middleStart
+        const before =
+            data.current.slice(
+                0,
+                pat.middleStart
+            );
+
+
+        const after =
+            data.current.slice(
+                pat.end
+            );
+
+
+        const outBytes =
+            new Uint8Array(
+                before.length +
+                zeroByte.length +
+                after.length
+            );
+
+
+        outBytes.set(
+            before,
+            0
         );
 
 
-    const after =
-        data.current.slice(
-            pat.end
+        outBytes.set(
+            zeroByte,
+            before.length
         );
 
 
-    const outBytes =
-        new Uint8Array(
-
+        outBytes.set(
+            after,
             before.length +
-
-            zeroByte.length +
-
-            after.length
-
+            zeroByte.length
         );
 
 
-    outBytes.set(
-        before,
-        0
-    );
+        data.current =
+            outBytes;
 
 
-    outBytes.set(
-        zeroByte,
-        before.length
-    );
+        if (type === "bytes") {
+
+            data.pattern =
+                findBytesPattern(
+                    outBytes
+                );
+
+        } else {
+
+            data.pattern =
+                findMetaPattern(
+                    outBytes
+                );
+        }
 
 
-    outBytes.set(
-        after,
-        before.length +
-        zeroByte.length
-    );
+        output.innerHTML =
+            `File: ` +
+
+            `<span class="highlight">` +
+            `${escapeHTML(data.name)}` +
+            `</span>\n` +
+
+            `UID Removed (Set to 0)`;
 
 
-    data.current =
-        outBytes;
+        showToast(
+            "UID removed successfully!"
+        );
 
+    } catch (error) {
 
-    if (type === "bytes") {
+        console.error(error);
 
-        data.pattern =
-            findBytesPattern(
-                outBytes
-            );
-
-    } else {
-
-        data.pattern =
-            findMetaPattern(
-                outBytes
-            );
-
+        showToast(
+            "UID removal failed.",
+            "error"
+        );
     }
-
-
-    output.innerHTML =
-
-        `File: ` +
-
-        `<span class="highlight">` +
-
-        `${escapeHTML(data.name)}` +
-
-        `</span>\n` +
-
-        `UID Removed (Set to 0)`;
-
-
-    showToast(
-        "UID removed successfully!"
-    );
 }
 
 
@@ -1198,7 +1122,10 @@ function removeUID(
 
 function downloadFile(data) {
 
-    if (!data.current) {
+    if (
+        !data ||
+        !data.current
+    ) {
 
         showToast(
             "No file available!",
@@ -1209,55 +1136,63 @@ function downloadFile(data) {
     }
 
 
-    const blob =
-        new Blob(
-            [data.current],
-            {
-                type:
-                    "application/octet-stream"
-            }
+    try {
+
+        const blob =
+            new Blob(
+                [data.current],
+                {
+                    type:
+                        "application/octet-stream"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const a =
+            document.createElement("a");
+
+
+        a.href =
+            url;
+
+
+        a.download =
+            `EDITED_${data.name}`;
+
+
+        document.body.appendChild(a);
+
+
+        a.click();
+
+
+        document.body.removeChild(a);
+
+
+        setTimeout(() => {
+
+            URL.revokeObjectURL(url);
+
+        }, 2000);
+
+
+        showToast(
+            `Downloaded: EDITED_${data.name}`
         );
 
+    } catch (error) {
 
-    const url =
-        URL.createObjectURL(blob);
+        console.error(error);
 
-
-    const a =
-        document.createElement("a");
-
-
-    a.href =
-        url;
-
-
-    a.download =
-        `EDITED_${data.name}`;
-
-
-    document
-        .body
-        .appendChild(a);
-
-
-    a.click();
-
-
-    document
-        .body
-        .removeChild(a);
-
-
-    setTimeout(() => {
-
-        URL.revokeObjectURL(url);
-
-    }, 2000);
-
-
-    showToast(
-        `Downloaded: EDITED_${data.name}`
-    );
+        showToast(
+            "Download failed.",
+            "error"
+        );
+    }
 }
 
 
@@ -1265,62 +1200,52 @@ function downloadFile(data) {
 // FILE INPUT
 // ============================================================
 
-bytesFile.addEventListener(
-    "change",
-    function(e) {
+if (bytesFile) {
 
-        processFile(
-            e.target.files[0],
-            "bytes"
-        );
+    bytesFile.addEventListener(
+        "change",
+        function(e) {
 
-    }
-);
+            const file =
+                e.target.files &&
+                e.target.files[0];
 
 
-metaFile.addEventListener(
-    "change",
-    function(e) {
+            if (file) {
 
-        processFile(
-            e.target.files[0],
-            "meta"
-        );
-
-    }
-);
-
-
-// ============================================================
-// UPLOAD ZONE CLICK
-// ============================================================
-
-bytesDropZone.addEventListener(
-    "click",
-    function(e) {
-
-        if (e.target !== bytesFile) {
-
-            bytesFile.click();
+                processFile(
+                    file,
+                    "bytes"
+                );
+            }
 
         }
+    );
+}
 
-    }
-);
+
+if (metaFile) {
+
+    metaFile.addEventListener(
+        "change",
+        function(e) {
+
+            const file =
+                e.target.files &&
+                e.target.files[0];
 
 
-metaDropZone.addEventListener(
-    "click",
-    function(e) {
+            if (file) {
 
-        if (e.target !== metaFile) {
-
-            metaFile.click();
+                processFile(
+                    file,
+                    "meta"
+                );
+            }
 
         }
-
-    }
-);
+    );
+}
 
 
 // ============================================================
@@ -1333,10 +1258,14 @@ function setupDropZone(
     type
 ) {
 
+    if (!zone || !input) {
+        return;
+    }
+
+
     [
         "dragenter",
         "dragover"
-
     ].forEach(
         eventName => {
 
@@ -1345,16 +1274,13 @@ function setupDropZone(
                 function(e) {
 
                     e.preventDefault();
-
                     e.stopPropagation();
 
                     zone.classList.add(
                         "dragover"
                     );
-
                 }
             );
-
         }
     );
 
@@ -1362,7 +1288,6 @@ function setupDropZone(
     [
         "dragleave",
         "drop"
-
     ].forEach(
         eventName => {
 
@@ -1371,29 +1296,27 @@ function setupDropZone(
                 function(e) {
 
                     e.preventDefault();
-
                     e.stopPropagation();
 
                     zone.classList.remove(
                         "dragover"
                     );
-
                 }
             );
-
         }
     );
 
 
     zone.addEventListener(
         "drop",
-        function(e) {
+        async function(e) {
 
             const files =
+                e.dataTransfer &&
                 e.dataTransfer.files;
 
 
-            if (!files.length) {
+            if (!files || !files.length) {
                 return;
             }
 
@@ -1402,11 +1325,34 @@ function setupDropZone(
                 files[0];
 
 
-            processFile(
+            try {
+
+                if (
+                    typeof DataTransfer !==
+                    "undefined"
+                ) {
+
+                    const dt =
+                        new DataTransfer();
+
+                    dt.items.add(file);
+
+                    input.files =
+                        dt.files;
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "DataTransfer unavailable."
+                );
+            }
+
+
+            await processFile(
                 file,
                 type
             );
-
         }
     );
 }
@@ -1430,147 +1376,41 @@ setupDropZone(
 // GLOBAL DRAG PREVENT
 // ============================================================
 
-document.addEventListener(
+[
+    "dragenter",
     "dragover",
-    function(e) {
+    "dragleave",
+    "drop"
+].forEach(
+    eventName => {
 
-        e.preventDefault();
+        document.addEventListener(
+            eventName,
+            function(e) {
 
+                e.preventDefault();
+
+            },
+            false
+        );
     }
 );
 
 
-document.addEventListener(
-    "drop",
-    function(e) {
+// ============================================================
+// PAGE LOAD ANIMATION
+// ============================================================
 
-        e.preventDefault();
+window.addEventListener(
+    "load",
+    function() {
+
+        document.body.classList.add(
+            "page-loaded"
+        );
 
     }
-);                "UID REMOVED",
-                `
-                    File:
-                    <span class="highlight">
-                        ${escapeHTML(data.name)}
-                    </span>
-                    <br>
-                    UID has been set to:
-                    <span class="highlight">
-                        0
-                    </span>
-                `
-            );
-
-
-            showToast(
-                "UID removed successfully!"
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            setResult(
-                output,
-                "error",
-                "REMOVE ERROR",
-                "Unable to remove UID."
-            );
-
-            showToast(
-                "UID removal failed.",
-                "error"
-            );
-        }
-
-    }, 350);
-}
-
-
-/* =========================================================
-   DOWNLOAD
-   ========================================================= */
-
-function downloadFile(data) {
-
-    if (
-        !data ||
-        !data.current
-    ) {
-
-        showToast(
-            "No edited file is available.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const blob =
-            new Blob(
-                [data.current],
-                {
-                    type:
-                        "application/octet-stream"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        const a =
-            document.createElement(
-                "a"
-            );
-
-
-        a.href = url;
-
-
-        a.download =
-            `EDITED_${data.name}`;
-
-
-        document.body.appendChild(
-            a
-        );
-
-
-        a.click();
-
-
-        document.body.removeChild(
-            a
-        );
-
-
-        setTimeout(() => {
-
-            URL.revokeObjectURL(
-                url
-            );
-
-        }, 2000);
-
-
-        showToast(
-            `Download started: EDITED_${data.name}`
-        );
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        showToast(
+);    showToast(
             "Download failed.",
             "error"
         );
